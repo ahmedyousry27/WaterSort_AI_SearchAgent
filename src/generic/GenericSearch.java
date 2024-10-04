@@ -2,6 +2,7 @@ package generic;
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -29,9 +30,12 @@ public abstract class GenericSearch {
 
 /*            if (goalTest(node)) {  // Check if this node is the goal
                 return node;
+                }
+                
+            qingFun.addAll(expand(node, problem));  // Expand and add to the queue
                 */ 
             }       
-		return "Not yet implemeted";
+		return null;// Return null if no solution is found
 	}
 	
 	  // Determine the appropriate queue based on the search strategy
@@ -58,5 +62,6 @@ public abstract class GenericSearch {
     //is goal in lecture is implemeted inside genericseach(search problem) if that is right? we should delete it from SearchTreeNode
 	public abstract boolean isGoal(State node);
 	public abstract int pathCost(String action);
+    public abstract List<Node> expand(Node node, GenericSearch problem); // Expand nodes
 	
 }
