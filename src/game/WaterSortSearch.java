@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import generic.BFSQueueingFunction;
 import generic.DFSQueueingFunction;
@@ -14,8 +15,8 @@ import generic.WaterBottle;
 
 public class WaterSortSearch extends GenericSearch {
 
-	public WaterSortSearch(State intialState, String[] actions, State StateSpace) {
-		super(intialState, actions, StateSpace);
+	public WaterSortSearch(State initialState, String[] actions, State StateSpace) {
+		super(initialState, actions, StateSpace);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -60,8 +61,23 @@ public class WaterSortSearch extends GenericSearch {
 
 	// Helper method to parse the initial state from a string input
     private static State parseInitialState(String initialState) {
-        // Implement the logic to parse the string and create a State object
-        return null;  // Placeholder
+    	String []arrayIntialState=initialState.split(";");
+    	int numberOfBottles=Integer.parseInt(arrayIntialState[0]);
+    	int bottleCapacity=Integer.parseInt(arrayIntialState[1]);
+    	WaterBottle[] bottles=new WaterBottle[numberOfBottles];
+    	for (int i=0;i<numberOfBottles;i++)
+    	{
+    		String []stringLayers=arrayIntialState[i+2].split(",");
+    		Stack<String>layers=new Stack<>();
+    		for (String color:stringLayers)
+    		{
+    			layers.add(color);
+    		}
+    		WaterBottle waterBottle=new WaterBottle (bottleCapacity,layers);
+    		bottles[i]=waterBottle;
+    	}
+    	State intialState=new State(bottles);
+    	return intialState;  
     }
 	
 	
