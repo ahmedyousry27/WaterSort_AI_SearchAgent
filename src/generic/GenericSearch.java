@@ -1,58 +1,50 @@
 package generic;
-import java.util.ArrayDeque;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 import game.Node;
 public abstract class GenericSearch {
 	
-	private State intialState;//representing initial world configuration
+	private State initialState;//representing initial world configuration
 	private String[] actions; //Available for the agent to perform
 	private State StateSpace; //set of states reachable from initial state
 	
-	public GenericSearch(State intialState , String [] actions,State StateSpace) {
-		this.intialState=intialState;
+	public GenericSearch(State initialState , String [] actions,State StateSpace) {
+		this.initialState=initialState;
 		this.actions=actions;
 		this.StateSpace=StateSpace;
 	}
 	
-	public String genericSearch(GenericSearch problem,String strategy)
-	{
-	    Queue<Node> qingFun = getQueueForStrategy(strategy); 
-	    Node initialNode = makeNode(problem.intialState);
-        qingFun.add(initialNode);
+    // Main search function that will run the search algorithm based on the strategy
+	public Node genericSearch(GenericSearch problem,QueueingFunction qFunction)
+	{ 
+	    SearchTreeNode initialNode = makeNode(problem.initialState);
+        qFunction.enqueue(null, initialNode);  // Enqueue the initial node using the provided queueing function
 
-        while (!qingFun.isEmpty()) {
-            Node node = qingFun.poll();  // Dequeue the first node
 
-/*            if (goalTest(node)) {  // Check if this node is the goal
-                return node;
-                }
-                
-            qingFun.addAll(expand(node, problem));  // Expand and add to the queue
-                */ 
-            }       
-		return null;// Return null if no solution is found
+        while (!qFunction.isEmpty()) {
+            SearchTreeNode node;
+            if (qFunction instanceof BFSQueueingFunction || qFunction instanceof UCSQueueingFunction) {
+                node = ((BFSQueueingFunction) qFunction).dequeue();  // Dequeue the node
+            } else if (qFunction instanceof DFSQueueingFunction) {
+                node = ((DFSQueueingFunction) qFunction).pop();  // Pop the node from the stack
+            } else {
+                throw new IllegalStateException("Unknown queueing function");
+            }
+
+            // Check if this node's state is the goal
+            if (isGoal(node.getState())) {
+                return (Node) node;  // Return the goal node if found
+            }
+
+            // Expand the node (get children nodes) and enqueue them
+            List<SearchTreeNode> expandedNodes = expand(node, problem);
+            for (SearchTreeNode child : expandedNodes) {
+                qFunction.enqueue(null, child);  // Enqueue each child node using the provided strategy
+            }
+        }
+        return null;  // Return null if no solution is found
 	}
 	
-	  // Determine the appropriate queue based on the search strategy
-    private Queue<Node> getQueueForStrategy(String strategy) {
-        switch (strategy) {
-            case "BF": return new LinkedList<>();  // BFS uses FIFO queue
-            case "DF": return new ArrayDeque<>();  // DFS uses LIFO (stack)
-            case "UC": return new PriorityQueue<>(Comparator.comparingInt(Node::getPathCost));  // UCS
-            case "GR1":
-                return new PriorityQueue<>(Comparator.comparingInt(Node::getHeuristicValue));  // Greedy with heuristic 1
-            case "AS1":
-                return new PriorityQueue<>(Comparator.comparingInt(node -> node.getPathCost() + node.getHeuristicValue()));  // A* with heuristic 1
-            case "AS2":
-                return new PriorityQueue<>(Comparator.comparingInt(node -> node.getPathCost() + node.getHeuristicValue()));  // A* with heuristic 2
-            default: return new LinkedList<>();  // Default to BFS if unspecified
-        }
-    }
 
     // Helper method to create the initial node
     private Node makeNode(State initialState) {
@@ -62,6 +54,6 @@ public abstract class GenericSearch {
     //is goal in lecture is implemeted inside genericseach(search problem) if that is right? we should delete it from SearchTreeNode
 	public abstract boolean isGoal(State node);
 	public abstract int pathCost(String action);
-    public abstract List<Node> expand(Node node, GenericSearch problem); // Expand nodes
+    public abstract List<SearchTreeNode> expand(SearchTreeNode node, GenericSearch problem); // Expand nodes
 	
 }
