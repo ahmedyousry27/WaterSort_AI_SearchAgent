@@ -1,4 +1,4 @@
-package generic;
+package code;
 
 import java.util.Stack;
 

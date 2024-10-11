@@ -1,6 +1,7 @@
-package generic;
+package code;
 
 import java.util.Arrays;
+import java.util.Stack;
 
 public class State {
     private WaterBottle[] bottles;
@@ -39,7 +40,7 @@ public class State {
         WaterBottle[] clonedBottles = new WaterBottle[bottles.length];
         for (int i = 0; i < bottles.length; i++) {
             WaterBottle bottle = bottles[i];
-            WaterBottle clonedBottle = new WaterBottle(bottle.getCapacity());
+            WaterBottle clonedBottle = new WaterBottle(bottle.getCapacity(),new Stack<>());
             for (String color : bottle.getLayers()) {
                 clonedBottle.addColor(color);
             }

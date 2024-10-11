@@ -1,17 +1,8 @@
-package game;
+package code;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-
-import generic.BFSQueueingFunction;
-import generic.DFSQueueingFunction;
-import generic.GenericSearch;
-import generic.QueueingFunction;
-import generic.SearchTreeNode;
-import generic.State;
-import generic.UCSQueueingFunction;
-import generic.WaterBottle;
 
 public class WaterSortSearch extends GenericSearch {
 
@@ -47,13 +38,21 @@ public class WaterSortSearch extends GenericSearch {
 		// Helper method to map the strategy string to the appropriate QueueingFunction
 	private static QueueingFunction getQueueingFunctionForStrategy(String strategy) {
 		switch (strategy) {
-			case "BFS":
+			case "BF":
 				return new BFSQueueingFunction();
-			case "DFS":
+			case "DF":
 				return new DFSQueueingFunction();
-			case "UCS":
+			case "UC":
 				return new UCSQueueingFunction();
-			// Add more strategies as needed
+			case "GR1":
+				return new GreedyQueueingFunction();
+			case "GR2":
+				return new GreedyQueueingFunction();
+			case "AS1":
+				return new AStarQueueingFunction();
+			case "AS2":
+				return new AStarQueueingFunction();
+			// Add more strategies as needed\\\\\\\\
 			default:
 				throw new IllegalArgumentException("Unknown strategy: " + strategy);
 		}
@@ -99,10 +98,10 @@ public class WaterSortSearch extends GenericSearch {
 	
 	
     // Generate child node based on an action and current state, adding heuristic value
-    private Node generateChildNode(SearchTreeNode parent, String action, GenericSearch problem) {
+    private Node generateChildNode(Node parent, String action, GenericSearch problem) {
         State newState = applyAction(parent.getState(), action);  // Apply the pour action
         int newPathCost = parent.getPathCost() + 1;  // Increase the path cost
-        int heuristicValue = calculateHeuristic(newState);  // Calculate heuristic for the new state
+        int heuristicValue = calculateHeuristic(newState,parent.getHeuristictype());  // Calculate heuristic for the new state
         int heuristicType=parent.getHeuristictype();
         return new Node(newState, parent, action, newPathCost, parent.getDepth() + 1, heuristicValue,heuristicType);
     }
@@ -134,9 +133,11 @@ public class WaterSortSearch extends GenericSearch {
     }
 
     // Calculate a heuristic value for the state
-    private int calculateHeuristic(State state) {
+    private int calculateHeuristic(State state, int heuristicType) {
         // Implement heuristic function (e.g., number of bottles with mixed colors, etc.)
-        int heuristic = 0;
+    	int heuristic = 0;
+    	if (heuristicType ==0) {
+    	
         WaterBottle[] bottles = state.getBottles();
 
         // Example heuristic: Count bottles that are not fully sorted
@@ -145,6 +146,12 @@ public class WaterSortSearch extends GenericSearch {
                 heuristic++;
             }
         }
+        }
+        else
+        {
+        	//implement second heuristic
+        }
+        
         return heuristic;
     }
 	@Override
@@ -161,12 +168,12 @@ public class WaterSortSearch extends GenericSearch {
 
 
     @Override
-    public List<SearchTreeNode> expand(SearchTreeNode node, GenericSearch problem) {
-        List<SearchTreeNode> children = new ArrayList<>();
+    public List<Node> expand(Node node, GenericSearch problem) {
+        List<Node> children = new ArrayList<>();
 
         // Iterate over all valid actions (pour from one bottle to another)
         for (String action : getValidActions(node.getState())) {
-            SearchTreeNode child = generateChildNode(node, action, problem);
+            Node child = generateChildNode(node, action, problem);
             children.add(child);
         }
 

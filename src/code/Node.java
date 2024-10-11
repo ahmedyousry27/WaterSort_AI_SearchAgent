@@ -1,7 +1,4 @@
-package game;
-
-import generic.SearchTreeNode;
-import generic.State;
+package code;
 
 public class Node extends SearchTreeNode {
 

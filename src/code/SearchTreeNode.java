@@ -1,4 +1,4 @@
-package generic;
+package code;
 public class SearchTreeNode {
     private State state;      // State of the puzzle (bottles and liquid configuration)
 	private SearchTreeNode parent;       // Parent node to trace back the solution
