@@ -2,33 +2,83 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
+import generic.BFSQueueingFunction;
+import generic.DFSQueueingFunction;
 import generic.GenericSearch;
+import generic.QueueingFunction;
+import generic.SearchTreeNode;
 import generic.State;
+import generic.UCSQueueingFunction;
+import generic.WaterBottle;
 
 public class WaterSortSearch extends GenericSearch {
 
-	public WaterSortSearch(State intialState, String[] actions, State StateSpace) {
-		super(intialState, actions, StateSpace);
+	public WaterSortSearch(State initialState, String[] actions, State StateSpace) {
+		super(initialState, actions, StateSpace);
 		// TODO Auto-generated constructor stub
 	}
 
 	
 	
 	
-	public static String solve(String initialState,String strategy,boolean visualize)
-	{
-		/*-Take intial state manipulted 
-		-create waterSort object instance
-		-call generic search function inhereted from generic search (watersort problem,strategy)
-		-return solution*/
-		/*
-		 * if (solution != null) { return formatSolution(solution); // Return solution
-		 * in required format } else { return "NOSOLUTION"; }
-		 */
-		return " ";//return String of 3 elements plan;pathCost;nodesExpanded 
-		//if no solution print "NOSOLUTION"
+	public static String solve(String initialState, String strategy, boolean visualize) {
+        // Create the initial state object (you need to implement the logic to parse the string)
+        State initialStateObj = parseInitialState(initialState);
+
+        // Create an instance of WaterSortSearch with the parsed initial state
+        WaterSortSearch waterSortSearch = new WaterSortSearch(initialStateObj, new String[]{}, null);
+
+		// Map the strategy to the appropriate QueueingFunction
+		QueueingFunction qFunction = getQueueingFunctionForStrategy(strategy);
+
+        // Call the generic search function and get the solution node
+        Node solution = waterSortSearch.genericSearch(waterSortSearch, qFunction);  // Modify strategy handling as per your implementation
+
+        // Return formatted solution or "NOSOLUTION" if no solution found
+        if (solution != null) {
+            return waterSortSearch.formatSolution(solution);  // Return solution in required format
+        } else {
+            return "NOSOLUTION";
+        }
+    }
+
+		// Helper method to map the strategy string to the appropriate QueueingFunction
+	private static QueueingFunction getQueueingFunctionForStrategy(String strategy) {
+		switch (strategy) {
+			case "BFS":
+				return new BFSQueueingFunction();
+			case "DFS":
+				return new DFSQueueingFunction();
+			case "UCS":
+				return new UCSQueueingFunction();
+			// Add more strategies as needed
+			default:
+				throw new IllegalArgumentException("Unknown strategy: " + strategy);
+		}
 	}
+
+	// Helper method to parse the initial state from a string input
+    private static State parseInitialState(String initialState) {
+    	String []arrayIntialState=initialState.split(";");
+    	int numberOfBottles=Integer.parseInt(arrayIntialState[0]);
+    	int bottleCapacity=Integer.parseInt(arrayIntialState[1]);
+    	WaterBottle[] bottles=new WaterBottle[numberOfBottles];
+    	for (int i=0;i<numberOfBottles;i++)
+    	{
+    		String []stringLayers=arrayIntialState[i+2].split(",");
+    		Stack<String>layers=new Stack<>();
+    		for (String color:stringLayers)
+    		{
+    			layers.add(color);
+    		}
+    		WaterBottle waterBottle=new WaterBottle (bottleCapacity,layers);
+    		bottles[i]=waterBottle;
+    	}
+    	State intialState=new State(bottles);
+    	return intialState;  
+    }
 	
 	
     // Helper method to format the solution string
@@ -49,7 +99,7 @@ public class WaterSortSearch extends GenericSearch {
 	
 	
     // Generate child node based on an action and current state, adding heuristic value
-    private Node generateChildNode(Node parent, String action, GenericSearch problem) {
+    private Node generateChildNode(SearchTreeNode parent, String action, GenericSearch problem) {
         State newState = applyAction(parent.getState(), action);  // Apply the pour action
         int newPathCost = parent.getPathCost() + 1;  // Increase the path cost
         int heuristicValue = calculateHeuristic(newState);  // Calculate heuristic for the new state
@@ -59,43 +109,64 @@ public class WaterSortSearch extends GenericSearch {
     // Define valid actions (pour actions) based on the current state
     private List<String> getValidActions(State state) {
         List<String> actions = new ArrayList<>();
-        // Implement logic to return all valid pour actions (e.g., pour(0,1), pour(0,2), etc.)
+        WaterBottle[] bottles = state.getBottles();
+
+        // Iterate over all pairs of bottles and add valid pour actions
+        for (int i = 0; i < bottles.length; i++) {
+            for (int j = 0; j < bottles.length; j++) {
+                if (i != j && bottles[i].canPourInto(bottles[j])) {
+                    actions.add("pour(" + i + "," + j + ")");
+                }
+            }
+        }
         return actions;
-    }
+	}
     // Apply the pour action to the state and return the new state
     private State applyAction(State state, String action) {
-        // Implement logic to modify the state based on the action (pour between bottles)
-        return state;  // Placeholder, modify as needed
+        String[] parts = action.replace("pour(", "").replace(")", "").split(",");
+        int fromBottle = Integer.parseInt(parts[0]);
+        int toBottle = Integer.parseInt(parts[1]);
+
+        // Clone the state and perform the action
+        State newState = state.cloneState();
+        newState.performAction(fromBottle, toBottle);
+        return newState;
     }
 
     // Calculate a heuristic value for the state
     private int calculateHeuristic(State state) {
         // Implement heuristic function (e.g., number of bottles with mixed colors, etc.)
-        return 0;  // Placeholder, modify as needed
+        int heuristic = 0;
+        WaterBottle[] bottles = state.getBottles();
+
+        // Example heuristic: Count bottles that are not fully sorted
+        for (WaterBottle bottle : bottles) {
+            if (!bottle.isSorted()) {
+                heuristic++;
+            }
+        }
+        return heuristic;
     }
 	@Override
-	public boolean isGoal(State node) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isGoal(State state) {
+		return state.isGoal();
 	}	
 	
 	@Override
 	public int pathCost(String action) {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;  // Each pour action has a cost of 1
 	}
 
 
 
 
     @Override
-    public List<Node> expand(Node node, GenericSearch problem) {
-        // Implement logic to generate valid child nodes (pour actions)
-        List<Node> children = new ArrayList<>();
+    public List<SearchTreeNode> expand(SearchTreeNode node, GenericSearch problem) {
+        List<SearchTreeNode> children = new ArrayList<>();
 
         // Iterate over all valid actions (pour from one bottle to another)
         for (String action : getValidActions(node.getState())) {
-            Node child = generateChildNode(node, action, problem);
+            SearchTreeNode child = generateChildNode(node, action, problem);
             children.add(child);
         }
 
