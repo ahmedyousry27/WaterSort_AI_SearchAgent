@@ -8,7 +8,7 @@ public class AStarQueueingFunction implements QueueingFunction {
     private PriorityQueue<Node> priorityQueue;
 
 	@Override
-	public void enqueue(List<Node> queue, Node node) {
+	public void enqueue(Node node) {
 		// TODO Auto-generated method stub
 		this.priorityQueue=new PriorityQueue<>(Comparator.comparingInt(Node->Node.getHeuristicValue()+Node.getPathCost()));//sort nodes by heuristic value
 
@@ -21,6 +21,11 @@ public class AStarQueueingFunction implements QueueingFunction {
 	@Override
 	public boolean isEmpty() {
         return priorityQueue.isEmpty();
+	}
+	@Override
+	public void displayQueue() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

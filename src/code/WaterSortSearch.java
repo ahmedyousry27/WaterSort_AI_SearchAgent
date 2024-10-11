@@ -31,12 +31,12 @@ public class WaterSortSearch extends GenericSearch {
         if (solution != null) {
             return waterSortSearch.formatSolution(solution);  // Return solution in required format
         } else {
-            return "NOSOLUTION";
+            return "nosolution";
         }
     }
 
 		// Helper method to map the strategy string to the appropriate QueueingFunction
-	private static QueueingFunction getQueueingFunctionForStrategy(String strategy) {
+	public static QueueingFunction getQueueingFunctionForStrategy(String strategy) {
 		switch (strategy) {
 			case "BF":
 				return new BFSQueueingFunction();
@@ -59,7 +59,7 @@ public class WaterSortSearch extends GenericSearch {
 	}
 
 	// Helper method to parse the initial state from a string input
-    private static State parseInitialState(String initialState) {
+    public static State parseInitialState(String initialState) {
     	String []arrayIntialState=initialState.split(";");
     	int numberOfBottles=Integer.parseInt(arrayIntialState[0]);
     	int bottleCapacity=Integer.parseInt(arrayIntialState[1]);
@@ -68,9 +68,12 @@ public class WaterSortSearch extends GenericSearch {
     	{
     		String []stringLayers=arrayIntialState[i+2].split(",");
     		Stack<String>layers=new Stack<>();
-    		for (String color:stringLayers)
+    		for (int j=stringLayers.length-1;j>=0;j--)
     		{
-    			layers.add(color);
+    			if (!stringLayers[j].equals("e"))
+    			{
+    				layers.add(stringLayers[j]);
+    			}
     		}
     		WaterBottle waterBottle=new WaterBottle (bottleCapacity,layers);
     		bottles[i]=waterBottle;
@@ -98,15 +101,15 @@ public class WaterSortSearch extends GenericSearch {
 	
 	
     // Generate child node based on an action and current state, adding heuristic value
-    private Node generateChildNode(Node parent, String action, GenericSearch problem) {
+    private Node generateChildNode(Node parent, String action) {
         State newState = applyAction(parent.getState(), action);  // Apply the pour action
         int newPathCost = parent.getPathCost() + 1;  // Increase the path cost
         int heuristicValue = calculateHeuristic(newState,parent.getHeuristictype());  // Calculate heuristic for the new state
-        int heuristicType=parent.getHeuristictype();
+        boolean heuristicType=parent.getHeuristictype();
         return new Node(newState, parent, action, newPathCost, parent.getDepth() + 1, heuristicValue,heuristicType);
     }
     // Define valid actions (pour actions) based on the current state
-    private List<String> getValidActions(State state) {
+    public List<String> getValidActions(State state) {
         List<String> actions = new ArrayList<>();
         WaterBottle[] bottles = state.getBottles();
 
@@ -133,10 +136,10 @@ public class WaterSortSearch extends GenericSearch {
     }
 
     // Calculate a heuristic value for the state
-    private int calculateHeuristic(State state, int heuristicType) {
+    private int calculateHeuristic(State state, boolean heuristicType) {
         // Implement heuristic function (e.g., number of bottles with mixed colors, etc.)
     	int heuristic = 0;
-    	if (heuristicType ==0) {
+    	if (heuristicType ) { // case heuristic == 1
     	
         WaterBottle[] bottles = state.getBottles();
 
@@ -147,7 +150,7 @@ public class WaterSortSearch extends GenericSearch {
             }
         }
         }
-        else
+        else // case heuristic ==0
         {
         	//implement second heuristic
         }
@@ -168,12 +171,12 @@ public class WaterSortSearch extends GenericSearch {
 
 
     @Override
-    public List<Node> expand(Node node, GenericSearch problem) {
+    public List<Node> expand(Node node) {
         List<Node> children = new ArrayList<>();
 
         // Iterate over all valid actions (pour from one bottle to another)
         for (String action : getValidActions(node.getState())) {
-            Node child = generateChildNode(node, action, problem);
+            Node child = generateChildNode(node, action);
             children.add(child);
         }
 

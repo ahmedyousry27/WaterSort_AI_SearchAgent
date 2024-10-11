@@ -11,13 +11,10 @@ public class DFSQueueingFunction implements QueueingFunction {
     }
 
     @Override
-    public void enqueue(List<Node> stackList, Node node) {
+    public void enqueue(Node node) {
         stack.push(node);  // Push the node onto the stack (LIFO)
     }
 
-    public Node pop() {
-        return stack.pop();  // Pop the node from the top of the stack
-    }
 
     public boolean isEmpty() {
         return stack.isEmpty();
@@ -25,7 +22,12 @@ public class DFSQueueingFunction implements QueueingFunction {
 
 	@Override
 	public Node dequeue() {
+        return stack.pop();  // Pop the node from the top of the stack
+	}
+
+	@Override
+	public void displayQueue() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 }
