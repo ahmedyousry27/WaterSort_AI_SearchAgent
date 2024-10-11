@@ -5,7 +5,6 @@ import java.util.Stack;
 public class WaterBottle {
     private Stack<String> layers;  // Each string represents a color
     private int capacity;
-
     public WaterBottle(int capacity,Stack<String> layers) {
         this.capacity = capacity;
         this.layers = layers;

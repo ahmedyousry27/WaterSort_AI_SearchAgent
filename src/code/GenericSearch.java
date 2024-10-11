@@ -1,11 +1,24 @@
 package code;
+import java.awt.Desktop.Action;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 public abstract class GenericSearch {
 	private State initialState;//representing initial world configuration
 	private String[] actions; //Available for the agent to perform
 	private State StateSpace; //set of states reachable from initial state
+	private HashSet<State> isRepeated;
+	private ArrayList<String> traverseSequence;
 	
+	public ArrayList<String> getTraverseSequence() {
+		return traverseSequence;
+	}
+
+	public HashSet<State> getIsRepeated() {
+		return isRepeated;
+	}
+
 	public State getInitialState() {
 		return initialState;
 	}
@@ -22,6 +35,8 @@ public abstract class GenericSearch {
 		this.initialState=initialState;
 		this.actions=actions;
 		this.StateSpace=StateSpace;
+		this.isRepeated=new HashSet<State>();
+		this.traverseSequence=new ArrayList<>();
 	}
 	
     // Main search function that will run the search algorithm based on the strategy
@@ -34,6 +49,7 @@ public abstract class GenericSearch {
         while (!qFunction.isEmpty()) {
             Node node;
             node = qFunction.dequeue();  // Dequeue the node
+            traverseSequence.add(node.getAction());
 
 			/*
 			 * } if (node==null){ throw new
