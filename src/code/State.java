@@ -1,15 +1,34 @@
-package generic;
+package code;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Stack;
 
 public class State {
     private WaterBottle[] bottles;
-
+	private boolean isRepeated ;
+	public boolean isRepeated() {
+		return isRepeated;
+	}
     // Constructor
     public State(WaterBottle[] bottles) {
         this.bottles = bottles;
     }
 
+    // Override hashCode()
+    @Override
+    public int hashCode() {
+        return Objects.hash(bottles);  // Generates a hash based on name and age
+    }
+    // Override equals()
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;  // Check if it's the same object
+        if (obj == null || getClass() != obj.getClass()) return false;  // Check type
+
+        State otherState = (State) obj;  // Cast the object
+        return Arrays.equals(bottles, otherState.bottles);  // Compare fields
+    }    
     // Get the bottles in the current state
     public WaterBottle[] getBottles() {
         return bottles;
@@ -39,7 +58,7 @@ public class State {
         WaterBottle[] clonedBottles = new WaterBottle[bottles.length];
         for (int i = 0; i < bottles.length; i++) {
             WaterBottle bottle = bottles[i];
-            WaterBottle clonedBottle = new WaterBottle(bottle.getCapacity());
+            WaterBottle clonedBottle = new WaterBottle(bottle.getCapacity(),new Stack<>());
             for (String color : bottle.getLayers()) {
                 clonedBottle.addColor(color);
             }

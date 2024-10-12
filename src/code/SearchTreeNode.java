@@ -1,4 +1,4 @@
-package generic;
+package code;
 public class SearchTreeNode {
     private State state;      // State of the puzzle (bottles and liquid configuration)
 	private SearchTreeNode parent;       // Parent node to trace back the solution
@@ -6,9 +6,9 @@ public class SearchTreeNode {
     private int pathCost;      // The cost to reach this node (e.g., number of pours)
     private int depth;         // Depth in the search tree
     private int heuristicValue;  // Heuristic value for Greedy/A* Search
-    private int heuristictype;   // defines which heuristic will be applied 1 or 2
+    private boolean heuristictype;   // defines which heuristic will be applied 0 or 1
     
-    public SearchTreeNode(State state, SearchTreeNode parent ,String action ,int pathCost , int depth , int heuristicValue,int heuristictype )
+    public SearchTreeNode(State state, SearchTreeNode parent ,String action ,int pathCost , int depth , int heuristicValue,boolean heuristictype )
     {
     	this.state=state;
     	this.parent=parent;
@@ -43,7 +43,7 @@ public class SearchTreeNode {
 		return heuristicValue;
 	}
 
-	public int getHeuristictype() {
+	public boolean getHeuristictype() {
 		return heuristictype;
 	}
 	
