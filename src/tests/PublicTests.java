@@ -60,7 +60,7 @@ public class PublicTests {
         String solution = WaterSortSearch.solve(grid1, "BF", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
     @Test(timeout = 60000)
     public void testa2() throws Exception {
@@ -101,7 +101,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "DF", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 
     @Test(timeout = 60000)
@@ -142,7 +142,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "UC", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 
     @Test(timeout = 60000)
@@ -183,7 +183,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "ID", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 
     @Test(timeout = 60000)
@@ -224,7 +224,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "GR1", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 
     @Test(timeout = 60000)
@@ -265,7 +265,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "GR2", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 
     @Test(timeout = 60000)
@@ -305,7 +305,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "AS1", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 
     @Test(timeout = 60000)
@@ -347,7 +347,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "AS2", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
-assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
+        assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 
     @Test(timeout = 60000)
@@ -444,10 +444,9 @@ class Checker{
     public boolean applyPlan(String grid, String solution){
         boolean x = true;
         solution = solution.toLowerCase();
-        if (solution.equals("nosolution")) {
+        if (solution.equals("nosolution;")) {
             return false;
         }
-//        System.out.println(solution);
         String[] y  = solution.split(";");
         String z = y[0];
         int _a = Integer.parseInt(y[1]);

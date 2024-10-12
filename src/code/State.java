@@ -6,29 +6,26 @@ import java.util.Stack;
 
 public class State {
     private WaterBottle[] bottles;
-	private boolean isRepeated ;
-	public boolean isRepeated() {
-		return isRepeated;
-	}
+
     // Constructor
     public State(WaterBottle[] bottles) {
         this.bottles = bottles;
     }
 
-    // Override hashCode()
     @Override
     public int hashCode() {
-        return Objects.hash(bottles);  // Generates a hash based on name and age
+        return Arrays.hashCode(bottles);  // Generates a hash based on the contents of the bottles array
     }
-    // Override equals()
+
+    // Override equals() to compare the content of the bottles array
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;  // Check if it's the same object
         if (obj == null || getClass() != obj.getClass()) return false;  // Check type
 
         State otherState = (State) obj;  // Cast the object
-        return Arrays.equals(bottles, otherState.bottles);  // Compare fields
-    }    
+        return Arrays.equals(bottles, otherState.bottles);  // Compare the contents of the bottles arrays
+    }      
     // Get the bottles in the current state
     public WaterBottle[] getBottles() {
         return bottles;
@@ -36,7 +33,15 @@ public class State {
 
     // Check if the current state is a goal (all bottles sorted)
     public boolean isGoal() {
-        return Arrays.stream(bottles).allMatch(WaterBottle::isSorted);
+    	boolean flag=false;
+    	boolean issorted=Arrays.stream(bottles).allMatch(WaterBottle::isSorted);
+    	for (WaterBottle waterBottle : bottles) {
+			if (waterBottle.isEmpty())
+			{
+				flag =true;
+			}
+		}
+    	return flag && issorted;
     }
 
     // Perform an action (pour liquid from one bottle to another)

@@ -1,5 +1,6 @@
 package code;
 
+import java.util.Objects;
 import java.util.Stack;
 
 public class WaterBottle {
@@ -9,7 +10,18 @@ public class WaterBottle {
         this.capacity = capacity;
         this.layers = layers;
     }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WaterBottle that = (WaterBottle) o;
+        return capacity == that.capacity &&
+               Objects.equals(layers, that.layers);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(layers, capacity);
+    }
     // Method to pour liquid from this bottle into another bottle
     public boolean pourInto(WaterBottle otherBottle) {
         if (this.isEmpty() || otherBottle.isFull()) {
@@ -58,13 +70,20 @@ public class WaterBottle {
     // Check if the bottle is fully sorted (i.e., all layers are the same color)
     public boolean isSorted() {
         if (isEmpty()) return true;  // An empty bottle is considered sorted
+
+        if (layers.size() == 1) return true;
+
+        // Get the top color to compare all layers
         String topColor = layers.peek();
+
+        // Check if all other layers are the same as the top color
         for (String layer : layers) {
-            if (!layer.equals(topColor)) return false;
+            if (!layer.equals(topColor)) {
+                return false;  // If any layer is different, the bottle is not sorted
+            }
         }
         return true;
     }
-
     // Method to print the bottle's layers (for debugging purposes)
     public void printBottle() {
         System.out.println("Bottle layers: " + layers.toString());
