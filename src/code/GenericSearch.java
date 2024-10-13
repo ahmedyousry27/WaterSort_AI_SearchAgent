@@ -49,8 +49,12 @@ public abstract class GenericSearch {
         while (!qFunction.isEmpty()) {
             Node node;
             node = qFunction.dequeue();  // Dequeue the node
+//            node.display();
+            if (node.getParent()!=null)
+            {
+//            	System.out.println(node.getAction());
             traverseSequence.add(node.getAction());
-
+            }
 			/*
 			 * } if (node==null){ throw new
 			 * IllegalStateException("Unknown queueing function"); }
@@ -78,7 +82,7 @@ public abstract class GenericSearch {
 	//abstract methods
     //is goal in lecture is implemeted inside genericseach(search problem) if that is right? we should delete it from Node
 	public abstract boolean isGoal(State node);
-	public abstract int pathCost(String action);
+	public abstract int pathCost(State parentState, State childState);
     public abstract List<Node> expand(Node node); // Expand nodes
 	
 }

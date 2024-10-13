@@ -88,11 +88,19 @@ public class WaterSortSearch extends GenericSearch {
     // Helper method to format the solution string
 	private String formatSolution(Node node) {
 		StringBuilder plan = new StringBuilder();
-		for (String action : getTraverseSequence())
+		for (int i =0 ; i<getTraverseSequence().size()-1;i++)
 		{
-			plan.append(action).append(",");
+			//System.out.println(getTraverseSequence().get(i));
+			plan.append(getTraverseSequence().get(i)).append(",");
+
 		}
-	    
+		plan.append(getTraverseSequence().get(getTraverseSequence().size()-1));
+		
+		
+		/*
+		 * for (String action : getTraverseSequence()) {
+		 * plan.append(action).append(","); }
+		 */
 	    int pathCost = node.getPathCost();
 	    int nodesExpanded = 0;  // Track nodes expanded
 	
@@ -103,30 +111,38 @@ public class WaterSortSearch extends GenericSearch {
 	        nodesExpanded++;
 	    }
 	
-	    return plan.toString() + ";" + pathCost + ";" + nodesExpanded;
+	    return plan.toString() + ";" + pathCost + ";" + getTraverseSequence().size();
 	}
 	
 	
     // Generate child node based on an action and current state, adding heuristic value
     public Node generateChildNode(Node parent, String action) {
     	//print hashset
-    	System.out.println("beginning of hashset");
-    	for (State s:getIsRepeated())
-    	{
-    		s.printState();
-    	}
-    	System.out.println();
-    	System.out.println("end of hashset");
-    	System.out.println();
+		/*
+		 * System.out.println("beginning of hashset"); for (State s:getIsRepeated()) {
+		 * s.printState(); } System.out.println(); System.out.println("end of hashset");
+		 * System.out.println();
+		 */
         State newState = applyAction(parent.getState(), action);  // Apply the pour action
-        int newPathCost = parent.getPathCost() + 1;  // Increase the path cost
+        int newPathCost = pathCost(parent.getState(),newState)+parent.getPathCost();  // Increase the path cost
         int heuristicValue = calculateHeuristic(newState,parent.getHeuristictype());  // Calculate heuristic for the new state
         boolean heuristicType=parent.getHeuristictype();
-        
+		/*
+		 * for (State state : getIsRepeated()) { state.printState(); }
+		 */
+		/*
+		 * System.out.println(getIsRepeated().contains(newState));
+		 */        
         if (getIsRepeated().contains(newState))
         {
-        	System.out.println("detect repeated state");
-        	return null; // detect repeated state
+//			  System.out.println("detect repeated state");
+//        	for (WaterBottle waterBottle : newState.getBottles()) {
+//				waterBottle.printBottle();
+//			}
+        	
+
+
+			  return null; // detect repeated state
         }
         else {
         	getIsRepeated().add(newState);
@@ -135,10 +151,7 @@ public class WaterSortSearch extends GenericSearch {
         }
     // Define valid actions (pour actions) based on the current state
     public List<String> getValidActions(State state) {
-    	if (state.isRepeated())
-    	{
-    		return new ArrayList<>();
-    	}
+
         List<String> actions = new ArrayList<>();
         WaterBottle[] bottles = state.getBottles();
 
@@ -146,7 +159,7 @@ public class WaterSortSearch extends GenericSearch {
         for (int i = 0; i < bottles.length; i++) {
             for (int j = 0; j < bottles.length; j++) {
                 if (i != j && bottles[i].canPourInto(bottles[j])) {
-                    actions.add("pour(" + i + "," + j + ")");
+                    actions.add("pour_" + i + "_" + j );
                 }
             }
         }
@@ -154,7 +167,7 @@ public class WaterSortSearch extends GenericSearch {
 	}
     // Apply the pour action to the state and return the new state
     private State applyAction(State state, String action) {
-        String[] parts = action.replace("pour(", "").replace(")", "").split(",");
+    	String[] parts = action.replace("pour_", "").split("_");
         int fromBottle = Integer.parseInt(parts[0]);
         int toBottle = Integer.parseInt(parts[1]);
 
@@ -188,12 +201,77 @@ public class WaterSortSearch extends GenericSearch {
     }
 	@Override
 	public boolean isGoal(State state) {
-		return state.isGoal();
+		if(state.isGoal())
+		{
+			WaterBottle bottles []=state.getBottles();
+			for (WaterBottle waterBottle : bottles) {
+				if (waterBottle.isEmpty())
+				{
+					waterBottle.addColor("e");
+					waterBottle.addColor("e");
+					waterBottle.addColor("e");
+					waterBottle.addColor("e");
+					
+				}
+				System.out.println(waterBottle.getLayers().size());
+				
+
+			}
+			return true;
+
+		}else
+		{
+			return false;	
+		}
+		
 	}	
 	
 	@Override
-	public int pathCost(String action) {
-		return 1;  // Each pour action has a cost of 1
+//	public int pathCost(State parent,String action) {
+//    	String[] parts = action.replace("pour_", "").split("_");
+//        int fromBottlenumber = Integer.parseInt(parts[0]);
+//        int toBottlenumber = Integer.parseInt(parts[1]);
+//        WaterBottle fromBottle=parent.getBottles()[fromBottlenumber];
+//        WaterBottle toBottle=parent.getBottles()[toBottlenumber];
+//        
+//        
+////        if (fromBottle.isEmpty() || toBottle.isFull()) {
+////            return 0;  // Cannot pour if this bottle is empty or the other bottle is full
+////        }
+//
+//        String topColor = fromBottle.getTopColor();
+//
+//        int pourableAmount = 0;
+//        for (String color : fromBottle.getLayers()) {
+//			if (color.equals(topColor))
+//			{
+//				pourableAmount++;
+//			}
+//			else
+//			{
+//			break;	
+//			}
+//			
+//		}
+//        return pourableAmount; 
+//	}
+	public int pathCost(State parentState, State childState) {
+	    int totalCost = 0;
+	    WaterBottle parentBottles []= parentState.getBottles();
+	    WaterBottle childBottles []  = childState.getBottles();
+
+	    for (int i = 0; i < parentBottles.length; i++) {
+	        WaterBottle parentBottle = parentBottles[i];
+	        WaterBottle childBottle = childBottles[i];
+
+	        int layersRemovedFromParent = parentBottle.getLayers().size() - childBottle.getLayers().size();
+
+	        if (layersRemovedFromParent > 0) {
+	            totalCost += layersRemovedFromParent;
+	        }
+	    }
+
+	    return totalCost;
 	}
 
 
