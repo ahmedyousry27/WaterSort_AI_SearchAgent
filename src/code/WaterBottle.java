@@ -109,4 +109,21 @@ public class WaterBottle {
         }
         return this.getTopColor().equals(otherBottle.getTopColor());
     }
+    
+    public int countMismatchedLayers() {
+        Stack<String> layers = getLayers();  // Assuming getLayers() returns the stack of colors
+        int mismatchCount = 0;
+
+        if (layers.isEmpty()) return 0;
+
+        String topColor = layers.peek();
+
+        for (String color : layers) {
+            if (!color.equals(topColor)) {
+                mismatchCount++;
+            }
+        }
+
+        return mismatchCount;
+    }
 }
