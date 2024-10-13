@@ -9,9 +9,9 @@ public abstract class GenericSearch {
 	private String[] actions; //Available for the agent to perform
 	private State StateSpace; //set of states reachable from initial state
 	private HashSet<State> isRepeated;
-	private ArrayList<String> traverseSequence;
+	private static ArrayList<String> traverseSequence;
 	
-	public ArrayList<String> getTraverseSequence() {
+	public static ArrayList<String> getTraverseSequence() {
 		return traverseSequence;
 	}
 
@@ -44,8 +44,6 @@ public abstract class GenericSearch {
 	{ 
 	    Node initialNode = makeNode(problem.initialState);
         qFunction.enqueue(initialNode);  // Enqueue the initial node using the provided queueing function
-
-
         while (!qFunction.isEmpty()) {
             Node node;
             node = qFunction.dequeue();  // Dequeue the node
@@ -67,7 +65,11 @@ public abstract class GenericSearch {
 
             // Expand the node (get children nodes) and enqueue them
             List<Node> expandedNodes = expand(node);
-            for (Node child : expandedNodes) {
+            //for (Node node2 : expandedNodes) {
+            	//System.out.println("false");
+    		//	node2.display();
+    	//	}    
+        for (Node child : expandedNodes) {
                 qFunction.enqueue( child);  // Enqueue each child node using the provided strategy
             }
         }

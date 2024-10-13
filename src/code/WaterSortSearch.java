@@ -22,10 +22,72 @@ public class WaterSortSearch extends GenericSearch {
         // Create an instance of WaterSortSearch with the parsed initial state
         WaterSortSearch waterSortSearch = new WaterSortSearch(initialStateObj, new String[]{}, null);
         waterSortSearch.getIsRepeated().add(initialStateObj);
+        if (strategy.equals("ID"))
+        {
+    		QueueingFunction qFunction = getQueueingFunctionForStrategy(strategy);
+    		((IDSQueueingFunction)qFunction).iterativeDeepeningSearch(waterSortSearch);
+//        	int maxDepthLimit=0;
+//        	while(true)
+//        	{
+//            for (int depthLimit = 0; depthLimit <= maxDepthLimit; depthLimit++) {
+//        		QueueingFunction qFunction = getQueueingFunctionForStrategy(strategy);
+//        		((IDSQueueingFunction) qFunction).setMaxDepth(maxDepthLimit);
+//        	    Node initialNode = new Node(initialStateObj, null, null, 0, 0,0,false); 
+//                qFunction.enqueue(initialNode);  // Enqueue the initial node using the provided queueing function
+//
+//                while (!qFunction.isEmpty()) {
+//              //  	System.out.println("false");
+//                    Node node;
+//                    node = qFunction.dequeue();  // Dequeue the node
+////                    node.display();
+//                    if (node.getParent()!=null)
+//                    {
+////                    	System.out.println(node.getAction());
+//                    	getTraverseSequence().add(node.getAction());
+//                    }
+//        			/*
+//        			 * } if (node==null){ throw new
+//        			 * IllegalStateException("Unknown queueing function"); }
+//        			 * 
+//        			 */
+//                    // Check if this node's state is the goal
+//                    if (node.getState().isGoal()) {
+//                        return waterSortSearch.formatSolution(node) ;  // Return the goal node if found
+//                    }
+//
+//                    // Expand the node (get children nodes) and enqueue them
+//                    List<Node> expandedNodes = waterSortSearch.expand(node);
+//                  //  System.out.println(node);
+//                    System.out.println(expandedNodes);
+////                    for (Node node2 : expandedNodes) {
+////                //    	System.out.println("hh");
+////            		//	node2.display();
+////            		}    
+//                for (Node child : expandedNodes) {
+//                        qFunction.enqueue( child);  // Enqueue each child node using the provided strategy
+//                    }
+//                System.out.println(qFunction.isEmpty());
+//                }
+//                }
+//            maxDepthLimit++;
+//        	}
+            
+            }
+        
+        
 		// Map the strategy to the appropriate QueueingFunction
 		QueueingFunction qFunction = getQueueingFunctionForStrategy(strategy);
-
         // Call the generic search function and get the solution node
+		if (qFunction instanceof IDSQueueingFunction)
+		{
+    		Node solution=((IDSQueueingFunction)qFunction).iterativeDeepeningSearch(waterSortSearch);
+            if (solution != null) {
+                return waterSortSearch.formatSolution(solution);  // Return solution in required format
+            } else {
+                return "nosolution";
+            }
+
+		}
         Node solution = waterSortSearch.genericSearch(waterSortSearch, qFunction);  // Modify strategy handling as per your implementation
 
         // Return formatted solution or "NOSOLUTION" if no solution found
@@ -45,6 +107,8 @@ public class WaterSortSearch extends GenericSearch {
 				return new DFSQueueingFunction();
 			case "UC":
 				return new UCSQueueingFunction();
+			case "ID":
+				return new IDSQueueingFunction();
 			case "GR1":
 				return new GreedyQueueingFunction();
 			case "GR2":
@@ -88,14 +152,14 @@ public class WaterSortSearch extends GenericSearch {
     // Helper method to format the solution string
 	private String formatSolution(Node node) {
 		StringBuilder plan = new StringBuilder();
-		for (int i =0 ; i<getTraverseSequence().size()-1;i++)
-		{
-			//System.out.println(getTraverseSequence().get(i));
-			plan.append(getTraverseSequence().get(i)).append(",");
-
-		}
-		plan.append(getTraverseSequence().get(getTraverseSequence().size()-1));
-		
+//		for (int i =0 ; i<getTraverseSequence().size()-1;i++)
+//		{
+//			//System.out.println(getTraverseSequence().get(i));
+//			plan.append(getTraverseSequence().get(i)).append(",");
+//
+//		}
+//		plan.append(getTraverseSequence().get(getTraverseSequence().size()-1));
+//		
 		
 		/*
 		 * for (String action : getTraverseSequence()) {
@@ -106,11 +170,11 @@ public class WaterSortSearch extends GenericSearch {
 	
 	    // Trace back the actions from the goal node to the root
 	    while (node.getParent() != null) {
-	     //   plan.insert(0, node.getAction() + ",");
+	        plan.insert(0, node.getAction() + ",");
 	        node = (Node) node.getParent();
 	        nodesExpanded++;
 	    }
-	
+	    plan.deleteCharAt(plan.length() - 1);
 	    return plan.toString() + ";" + pathCost + ";" + getTraverseSequence().size();
 	}
 	
@@ -146,6 +210,7 @@ public class WaterSortSearch extends GenericSearch {
         }
         else {
         	getIsRepeated().add(newState);
+        	//newState.printState();
         return new Node(newState, parent, action, newPathCost, parent.getDepth() + 1, heuristicValue,heuristicType);
         }
         }
@@ -163,6 +228,7 @@ public class WaterSortSearch extends GenericSearch {
                 }
             }
         }
+        //System.out.println(actions);
         return actions;
 	}
     // Apply the pour action to the state and return the new state
@@ -201,28 +267,29 @@ public class WaterSortSearch extends GenericSearch {
     }
 	@Override
 	public boolean isGoal(State state) {
-		if(state.isGoal())
-		{
-			WaterBottle bottles []=state.getBottles();
-			for (WaterBottle waterBottle : bottles) {
-				if (waterBottle.isEmpty())
-				{
-					waterBottle.addColor("e");
-					waterBottle.addColor("e");
-					waterBottle.addColor("e");
-					waterBottle.addColor("e");
-					
-				}
-				System.out.println(waterBottle.getLayers().size());
-				
-
-			}
-			return true;
-
-		}else
-		{
-			return false;	
-		}
+//		if(state.isGoal())
+//		{
+//			WaterBottle bottles []=state.getBottles();
+////			for (WaterBottle waterBottle : bottles) {
+////				if (waterBottle.isEmpty())
+////				{
+////					waterBottle.addColor("e");
+////					waterBottle.addColor("e");
+////					waterBottle.addColor("e");
+////					waterBottle.addColor("e");
+////					
+////				}
+//			//	System.out.println(waterBottle.getLayers().size());
+//				
+//
+//			}
+//			return true;
+//
+//		}else
+//		{
+//			return false;	
+//		}
+		return state.isGoal();
 		
 	}	
 	
@@ -283,9 +350,16 @@ public class WaterSortSearch extends GenericSearch {
 
         // Iterate over all valid actions (pour from one bottle to another)
         for (String action : getValidActions(node.getState())) {
+        	//System.out.println(action);
             Node child = generateChildNode(node, action);
+          //  System.out.println("generated child");
+            //child.display();
             if (child !=null) {
             children.add(child);
+           // for (Node node2 : children) {
+            //	System.out.println("true");
+    		//	node2.display();
+    		//}
             }
         }
 
