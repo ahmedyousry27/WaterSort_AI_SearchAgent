@@ -18,7 +18,11 @@ public class SearchTreeNode {
     	this.heuristicValue=heuristicValue;
     }
     
-    //Getter methods
+    public void setDepth(int depth) {
+		this.depth = depth;
+	}
+
+	//Getter methods
     public State getState() {
 		return state;
 	}
