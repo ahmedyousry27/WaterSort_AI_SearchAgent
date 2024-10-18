@@ -11,11 +11,7 @@ public class UCSQueueingFunction implements QueueingFunction {
         this.priorityQueue = new PriorityQueue<>(Comparator.comparingInt(SearchTreeNode::getPathCost));  // Sort nodes by path cost
     }
 
-    public PriorityQueue<Node> getPriorityQueue() {
-		return priorityQueue;
-	}
-
-	@Override
+    @Override
     public void enqueue(Node node) {
         priorityQueue.add(node);  // Add node to the priority queue, sorted by cost
     }

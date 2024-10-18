@@ -1,6 +1,5 @@
 package code;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -22,22 +21,6 @@ public class WaterBottle {
     @Override
     public int hashCode() {
         return Objects.hash(layers, capacity);
-    }
-    public int countMismatchedLayers() {
-        Stack<String> layers = getLayers();  // Assuming getLayers() returns the stack of colors
-        int mismatchCount = 0;
-
-        if (layers.isEmpty()) return 0;
-
-        String topColor = layers.peek();
-
-        for (String color : layers) {
-            if (!color.equals(topColor)) {
-                mismatchCount++;
-            }
-        }
-
-        return mismatchCount;
     }
     // Method to pour liquid from this bottle into another bottle
     public boolean pourInto(WaterBottle otherBottle) {

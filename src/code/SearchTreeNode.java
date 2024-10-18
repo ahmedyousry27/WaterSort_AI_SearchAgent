@@ -6,9 +6,9 @@ public class SearchTreeNode {
     private int pathCost;      // The cost to reach this node (e.g., number of pours)
     private int depth;         // Depth in the search tree
     private int heuristicValue;  // Heuristic value for Greedy/A* Search
-    private int heuristictype;   // defines which heuristic will be applied 0 or 1
+    private boolean heuristictype;   // defines which heuristic will be applied 0 or 1
     
-    public SearchTreeNode(State state, SearchTreeNode parent ,String action ,int pathCost , int depth , int heuristicValue,int heuristictype )
+    public SearchTreeNode(State state, SearchTreeNode parent ,String action ,int pathCost , int depth , int heuristicValue,boolean heuristictype )
     {
     	this.state=state;
     	this.parent=parent;
@@ -16,7 +16,6 @@ public class SearchTreeNode {
     	this.pathCost=pathCost;
     	this.depth=depth;
     	this.heuristicValue=heuristicValue;
-    	this.heuristictype=heuristictype;
     }
     
     public void setDepth(int depth) {
@@ -48,8 +47,14 @@ public class SearchTreeNode {
 		return heuristicValue;
 	}
 
-	public int getHeuristictype() {
+	public boolean getHeuristictype() {
 		return heuristictype;
 	}
 	
+	/*
+	 * // Check if this node represents a goal state (all bottles sorted) public
+	 * boolean isGoal() { // Implement logic to check if the puzzle is solved (each
+	 * bottle has one color) return false; // Placeholder }
+	 */
+    
 }

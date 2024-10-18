@@ -17,11 +17,7 @@ public class DFSQueueingFunction implements QueueingFunction {
     }
 
 
-    public LinkedList<Node> getStack() {
-		return stack;
-	}
-
-	public boolean isEmpty() {
+    public boolean isEmpty() {
         return stack.isEmpty();
     }
 
