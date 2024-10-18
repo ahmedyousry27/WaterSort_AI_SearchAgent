@@ -45,45 +45,14 @@ public class IDSQueueingFunction implements QueueingFunction {
 		// TODO Auto-generated method stub
 		
 	}
-//    public Node iterativeDeepeningSearch(Node root, int maxDepthLimit) {
-//        for (int depthLimit = 0; depthLimit <= maxDepthLimit; depthLimit++) {
-//            System.out.println("Searching with depth limit: " + depthLimit);
-//            Node result = depthLimitedSearch(root, depthLimit);
-//            if (result != null) {
-//                return result;  // Return the solution if found
-//            }
-//        }
-//        return null;  // No solution found within the depth limit
-//    }
-//
-//    // Depth-Limited Search (DLS) for a specific depth limit
-//    public Node depthLimitedSearch(Node root, int depthLimit) {
-//        stack.clear();  // Clear the stack for each depth-limited search
-//        enqueue(root);  // Start with the root node
-//
-//        while (!isEmpty()) {
-//            Node currentNode = dequeue();
-//
-//            // Check if the current node is the goal state
-//            if ((currentNode.getState().isGoal())) {
-//                return currentNode;
-//            }
-//
-////            // Enqueue the children nodes if they are within the depth limit
-////            for (Node child : currentNode.getChildren()) {
-////                child.setDepth(currentNode.getDepth() + 1);  // Set the depth of the child node
-////                enqueue(child);
-////            }
-//        }
-//        return null;  // No solution found at this depth level
-//    }
+
 	// The IDS search method with an iterative deepening strategy
     public Node iterativeDeepeningSearch(WaterSortSearch waterSortSearch) {
 
         while (true) {
             // Perform DFS with current depth limit
         	HashSet<State> visited=waterSortSearch.getIsRepeated();
-        	Node node = new Node(waterSortSearch.getInitialState(), null, null, 0, 0,0,false); 
+        	Node node = new Node(waterSortSearch.getInitialState(), null, null, 0, 0,0,1); 
             Node result = depthLimitedSearch(waterSortSearch,node, waterSortSearch.getIsRepeated(), 0);
             
             if (result != null) {
@@ -103,7 +72,6 @@ public class IDSQueueingFunction implements QueueingFunction {
             return null;
         }
 
-        // Check if the current node is the goal
         if (currentNode.getState().isGoal()) {
             return currentNode;  // Return the solution
         }
