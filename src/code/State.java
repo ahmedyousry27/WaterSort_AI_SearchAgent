@@ -33,15 +33,8 @@ public class State {
 
     // Check if the current state is a goal (all bottles sorted)
     public boolean isGoal() {
-    	boolean flag=false;
     	boolean issorted=Arrays.stream(bottles).allMatch(WaterBottle::isSorted);
-    	for (WaterBottle waterBottle : bottles) {
-			if (waterBottle.isEmpty())
-			{
-				flag =true;
-			}
-		}
-    	return flag && issorted;
+    	return  issorted;
     }
 
     // Perform an action (pour liquid from one bottle to another)

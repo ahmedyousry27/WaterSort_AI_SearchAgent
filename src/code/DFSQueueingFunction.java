@@ -1,13 +1,14 @@
 package code;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
 public class DFSQueueingFunction implements QueueingFunction {
-    private Stack<Node> stack;
+    private LinkedList<Node> stack;
 
     public DFSQueueingFunction() {
-        this.stack = new Stack<>();  // Initialize Stack for DFS (LIFO)
+        this.stack = new LinkedList<>();  // Initialize Stack for DFS (LIFO)
     }
 
     @Override
@@ -16,13 +17,17 @@ public class DFSQueueingFunction implements QueueingFunction {
     }
 
 
-    public boolean isEmpty() {
+    public LinkedList<Node> getStack() {
+		return stack;
+	}
+
+	public boolean isEmpty() {
         return stack.isEmpty();
     }
 
 	@Override
 	public Node dequeue() {
-        return stack.pop();  // Pop the node from the top of the stack
+        return stack.pollLast();  // Pop the node from the top of the stack
 	}
 
 	@Override
